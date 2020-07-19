@@ -1,15 +1,35 @@
 #!/usr/bin/env node
 
 // 서버를 구동하는 로직
+// test 혹은 development 혹은 production DB sync는 www 에서 정의해 주기
+
 /**
  * Module dependencies.
  */
-
+const dotenv = require("dotenv");
 var app = require("../app");
 var debug = require("debug")("tdd:server");
 var http = require("http");
+const path = require("path");
 
 const syncDb = require("./sync-db");
+
+if (process.env.NODE_ENV === "production") {
+  console.log(path.join(__dirname, "../env/.production.env"));
+  dotenv.config({
+    path: path.join(__dirname, "../env/.production.env"),
+  });
+} else if (process.env.NODE_ENV === "development") {
+  console.log(path.join(__dirname, "../env/.development.env"));
+  dotenv.config({
+    path: path.join(__dirname, "../env/.development.env"),
+  });
+} else {
+  console.log(path.join(__dirname, "../env/.test.env"));
+  dotenv.config({
+    path: path.join(__dirname, "../env/.test.env"),
+  });
+}
 
 /**
  * Get port from environment and store in Express.
