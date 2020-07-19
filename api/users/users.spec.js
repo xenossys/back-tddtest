@@ -1,11 +1,23 @@
 const request = require("supertest");
 const should = require("should");
 const app = require("../../app");
+const models = require("../../models");
 
 describe("GET /users는", () => {
   describe("성공시", () => {
+    const users = [{ name: "alice" }, { name: "bek" }, { name: "chris" }];
+    //desc
+    before(
+      () => models.sequelize.sync({ force: true }) //sync 를 맞춰줌
+    ); //before는 it 이 실행되기 전에 실행되는 ..
+    // sample data 만들기
+    before(
+      () => models.User.bulkCreate(users) // bulkCreate 여러개의 값을 넣을 때.
+    );
     it("유저 객체를 담은 배열로 응답한다.", (done) => {
+      // it.only => 이 테스트만 실행 한다.
       //done 은 비동기 처리를 해주는 것.
+
       request(app)
         .get("/users")
         .end((err, res) => {
